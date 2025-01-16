@@ -1,14 +1,17 @@
 import { googleAuthModel } from "../models/googleAuthModel";
 import { generateToken } from "./jwtService";
-import bcrypt from "bcrypt"; // Import bcrypt
+import bcrypt from "bcrypt";
+import cloudinary from "./cloudinary";
 const saltRounds = 10;
 
 export const createAccount = async (
   email: string,
   displayname: string,
-  password: null | string
+  password: null | string,
+  image: string
 ) => {
   try {
+    let hashedPassword: string | null = null;
     const existingUser = await googleAuthModel.findOne({ email });
     if (existingUser) {
       return {
@@ -17,7 +20,16 @@ export const createAccount = async (
       };
     }
 
-    let hashedPassword: string | null = null;
+    const uploadedResponse = await cloudinary.v2.uploader.upload(image, {
+      upload_preset: "",
+    });
+
+    if (!uploadedResponse) {
+      return {
+        success: false,
+        message: "Cloudinary Error",
+      };
+    }
     if (password) {
       hashedPassword = await bcrypt.hash(password, saltRounds);
     }
@@ -25,7 +37,9 @@ export const createAccount = async (
     const newUser = await googleAuthModel.create({
       email,
       displayname,
-      password: hashedPassword, // Set hashed password or null
+      password: hashedPassword,
+      image: uploadedResponse.url,
+      cloudinaryid: uploadedResponse.public_id,
     });
 
     const token = generateToken({ id: newUser._id });

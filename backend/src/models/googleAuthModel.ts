@@ -3,6 +3,8 @@ interface IUser extends Document {
   email: string;
   displayname: string;
   password: string;
+  image: string;
+  cloudinaryid: string;
 }
 
 const googleAuthSchema: Schema = new Schema(
@@ -16,6 +18,13 @@ const googleAuthSchema: Schema = new Schema(
       type: String,
       required: true,
       trim: true,
+    },
+    image: {
+      type: String,
+      required: true,
+    },
+    cloudinaryid: {
+      type: String,
     },
     password: {
       type: String,

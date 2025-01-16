@@ -12,3 +12,18 @@ export const checkPasswordValid = async (password: string | undefined) => {
     password: password,
   };
 };
+
+export const getUser = async (id: string) => {
+  const findUserById = await googleAuthModel.findById({ _id: id });
+
+  if (!findUserById) {
+    return {
+      success: false,
+    };
+  }
+
+  return {
+    success: true,
+    user: findUserById,
+  };
+};

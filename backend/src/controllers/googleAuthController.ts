@@ -29,7 +29,7 @@ export const googleAuthSignup = async (
   res: Response
 ): Promise<void> => {
   try {
-    const { email, displayname } = req.body;
+    const { email, displayname, image } = req.body;
 
     const existingUser = await findEmailService(email);
     if (existingUser) {
@@ -37,7 +37,12 @@ export const googleAuthSignup = async (
       return;
     }
 
-    const createAccountResult = await createAccount(email, displayname, null);
+    const createAccountResult = await createAccount(
+      email,
+      displayname,
+      null,
+      image
+    );
     if (createAccountResult.success) {
       res.status(201).json({
         token: createAccountResult.token,
