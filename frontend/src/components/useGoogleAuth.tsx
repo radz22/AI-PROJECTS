@@ -16,13 +16,13 @@ export const GoogleAuth: React.FC<googleAuthProps> = ({ hook }) => {
       })
         .then((response) => response.json())
         .then((userData) => {
-          const { email, name } = userData;
+          const { email, name, picture } = userData;
 
           const data: userType = {
             email: email,
             displayname: name,
+            image: picture,
           };
-
           hook(data);
         })
         .catch((error) => {

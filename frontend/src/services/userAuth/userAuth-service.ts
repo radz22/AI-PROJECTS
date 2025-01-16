@@ -29,3 +29,16 @@ export const userSignUp = async (user: userType) => {
     }
   }
 };
+
+export const getUserData = async (token: string | null) => {
+  try {
+    const response = await axios.get(`${http.userGetData}/${token}`);
+    return response.data;
+  } catch (error: any) {
+    if (error.response) {
+      throw error.response;
+    } else {
+      throw new Error("Network error or no response from server");
+    }
+  }
+};
