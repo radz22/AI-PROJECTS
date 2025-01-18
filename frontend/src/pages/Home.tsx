@@ -1,6 +1,6 @@
 import { Header } from "../components/header";
 import { MessageBox } from "../components/messageBox";
-import { getUser } from "../hooks/userAuth/getUserData";
+import { getUser } from "../hooks/userAuth/getUserData-hook";
 import { useEffect } from "react";
 import { getFromLocalStorage } from "../services/localstorage/localStorageService";
 export const Home = () => {
@@ -14,7 +14,7 @@ export const Home = () => {
   return (
     <div className="w-full px-10 py-5 h-screen bg-[#f5f5f5]">
       <Header data={userData} />
-      <MessageBox />
+      <MessageBox data={userData} />
     </div>
   );
 };

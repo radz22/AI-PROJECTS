@@ -4,4 +4,5 @@ export const http = {
   userSignin: "http://localhost:3000/user/auth/signin",
   userSignup: "http://localhost:3000/user/auth/signup",
   userGetData: "http://localhost:3000/user/auth/userdata",
+  geminiAI: "http://localhost:3000/api/gemini",
 };

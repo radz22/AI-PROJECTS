@@ -1,0 +1,36 @@
+import React, { useState, useEffect } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { handlePrompting } from "../../services/gemini/geminiAi-service";
+import { aiResponsetype, aiPosttype } from "../../types/aichat-type";
+const geminiAiHook = () => {
+  const [chatAi, setChatAi] = useState<aiResponsetype[]>([]);
+  const [userInput, setUserInput] = useState<string>("");
+  const queryClient = useQueryClient();
+  const promptingMutating = useMutation({
+    mutationFn: handlePrompting,
+    onSuccess: (data) => {
+      setChatAi([...chatAi, { text: data.text, name: data.name }]);
+
+      queryClient.invalidateQueries({ queryKey: ["gemini"] });
+    },
+    onError: (error: any) => {
+      console.log(error?.data?.msg || error?.data?.message);
+    },
+  });
+
+  const handleAiPrompting = (prompt: aiPosttype) => {
+    setChatAi([...chatAi, { text: userInput, name: prompt.name }]);
+    promptingMutating.mutate(prompt.prompt);
+  };
+
+  return {
+    handleAiPrompting,
+    promptingMutating,
+    setUserInput,
+    userInput,
+    chatAi,
+    setChatAi,
+  };
+};
+
+export default geminiAiHook;

@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { getUser } from "../hooks/userAuth/getUserData";
+import { getUser } from "../hooks/userAuth/getUserData-hook";
 import { getFromLocalStorage } from "../services/localstorage/localStorageService";
 import { userDataType } from "../types/user-data-type";
 interface headerProps {
