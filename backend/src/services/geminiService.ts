@@ -4,13 +4,15 @@ import "dotenv/config";
 const apiKey = process.env.GEMINI_API_KEY;
 if (!apiKey) throw new Error("GEMINI_API_KEY is not defined in .env");
 
-const client = new GoogleGenerativeAI(apiKey);
+const genAI = new GoogleGenerativeAI(apiKey);
 
-export const getGeminiResponse = async (prompt: string): Promise<string> => {
+export const getGeminiResponse = async (prompt: string) => {
   try {
-    const model = client.getGenerativeModel({ model: "gemini-1.5-flash" });
-    const response = await model.generateContent([prompt]);
-    return response.response.text();
+    const model = genAI.getGenerativeModel({
+      model: "gemini-2.0-flash-exp",
+    });
+    const result = await model.generateContent(prompt);
+    return result.response.text();
   } catch (error) {
     console.error("Error with Gemini API:", error);
     throw new Error("Failed to fetch response from Gemini.");

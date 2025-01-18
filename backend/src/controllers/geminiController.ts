@@ -4,8 +4,7 @@ export const generateResponse = async (
   req: Request,
   res: Response
 ): Promise<void> => {
-  const prompt: string = req.body;
-
+  const { prompt } = req.body;
   if (!prompt) {
     res.status(400).json({ error: "Prompt is required" });
     return;
@@ -13,7 +12,10 @@ export const generateResponse = async (
 
   try {
     const response = await getGeminiResponse(prompt);
-    res.json({ response });
+    res.status(200).json({
+      text: response,
+      name: "SANTY-AI",
+    });
   } catch (error: any) {
     res.status(500).json({ error: error.message || "Internal Server Error" });
   }

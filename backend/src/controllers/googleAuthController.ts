@@ -15,7 +15,7 @@ export const googleAuthSignin = async (
     }
     const token = generateToken({ id: existingUser._id });
 
-    res.json({
+    res.status(200).json({
       token: token,
       login: true,
     });
