@@ -5,11 +5,7 @@ import { useEffect } from "react";
 import { getFromLocalStorage } from "../services/localstorage/localStorageService";
 export const Home = () => {
   const token = getFromLocalStorage("token");
-  const { handleGetUserData, userData } = getUser();
-
-  useEffect(() => {
-    handleGetUserData(token);
-  }, [token]);
+  const { userData } = getUser();
 
   return (
     <div className="w-full px-10 py-5 h-screen bg-[#f5f5f5]">

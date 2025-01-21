@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { userDataType } from "../types/user-data-type";
 import geminiAiHook from "../hooks/gemini/geminiAi-hook";
 import { aiPosttype } from "../types/aichat-type";
-import { Atom } from "react-loading-indicators";
+import { Atom, OrbitProgress } from "react-loading-indicators";
 interface headerProps {
   data: userDataType | null;
 }
@@ -13,30 +13,21 @@ export const MessageBox: React.FC<headerProps> = ({ data }) => {
     setUserInput,
     chatAi,
     promptingMutating,
-    setChatAi,
   } = geminiAiHook();
 
-  const handleResponse = () => {
+  const handleResponse = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
     const userResponse: aiPosttype = {
       name: data?.displayname,
       prompt: userInput,
     };
 
     handleAiPrompting(userResponse);
+
     setUserInput("");
   };
 
-  useEffect(() => {
-    if (data) {
-      setChatAi((prev) => [
-        ...prev,
-        {
-          text: `Hi ${data.displayname}, it's nice to meet you! How can I help you today? `,
-          name: "SANTY-AI",
-        },
-      ]);
-    }
-  }, [data]);
   return (
     <div className="flex items-center justify-center mt-20 w-full">
       <div className="w-[60%]">
@@ -92,35 +83,48 @@ export const MessageBox: React.FC<headerProps> = ({ data }) => {
           </div>
         </div>
         <div className=" border-t-4 border-[#eeeeee] bg-[#ffffff] w-full px-3 py-3  overflow-x-auto  shadow-lg shadow-[#dbdbdb] rounded-b-lg	">
-          <div className="flex  justify-center gap-5 w-full   py-3">
-            <div className="w-[90%]">
-              <div className="w-full">
-                <input
-                  type="text"
-                  className="w-full px-3 py-3 bg-[#f0f0f0] text-[#4e4e4e]  placeholder-[#4e4e4e] rounded-lg"
-                  placeholder="Message SANTY-AI"
-                  value={userInput}
-                  onChange={(e) => setUserInput(e.target.value)}
-                />
+          <form onSubmit={handleResponse}>
+            <div className="flex  justify-center gap-5 w-full   py-3">
+              <div className="w-[90%]">
+                <div className="w-full">
+                  <input
+                    type="text"
+                    className="w-full px-3 py-3 bg-[#f0f0f0] text-[#4e4e4e]  placeholder-[#4e4e4e] rounded-lg"
+                    placeholder="Message SANTY-AI"
+                    value={userInput}
+                    onChange={(e) => setUserInput(e.target.value)}
+                  />
+                </div>
               </div>
-            </div>
-            <div
-              className="w-[10%] bg-[#408fec] rounded-full flex items-center justify-center"
-              onClick={handleResponse}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="30"
-                height="30"
-                viewBox="0 0 24 24"
+
+              <button
+                className={`w-[10%] bg-[#408fec] rounded-full flex items-center justify-center h-[50px]`}
+                type="submit"
+                disabled={promptingMutating.isPending}
               >
-                <path
-                  fill="#fff"
-                  d="M4.4 19.425q-.5.2-.95-.088T3 18.5V14l8-2l-8-2V5.5q0-.55.45-.837t.95-.088l15.4 6.5q.625.275.625.925t-.625.925z"
-                />
-              </svg>
+                {promptingMutating.isPending ? (
+                  <OrbitProgress
+                    variant="track-disc"
+                    color="#ffffff"
+                    style={{ fontSize: "5px" }}
+                    textColor="#ffffff"
+                  />
+                ) : (
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="30"
+                    height="30"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      fill="#fff"
+                      d="M4.4 19.425q-.5.2-.95-.088T3 18.5V14l8-2l-8-2V5.5q0-.55.45-.837t.95-.088l15.4 6.5q.625.275.625.925t-.625.925z"
+                    />
+                  </svg>
+                )}
+              </button>
             </div>
-          </div>
+          </form>
         </div>
       </div>
     </div>

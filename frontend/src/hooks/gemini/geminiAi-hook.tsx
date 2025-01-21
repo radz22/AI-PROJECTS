@@ -1,9 +1,14 @@
-import React, { useState, useEffect } from "react";
+import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { handlePrompting } from "../../services/gemini/geminiAi-service";
 import { aiResponsetype, aiPosttype } from "../../types/aichat-type";
 const geminiAiHook = () => {
-  const [chatAi, setChatAi] = useState<aiResponsetype[]>([]);
+  const [chatAi, setChatAi] = useState<aiResponsetype[]>([
+    {
+      text: `Hi, it's nice to meet you! How can I help you today?`,
+      name: "SANTY-AI",
+    },
+  ]);
   const [userInput, setUserInput] = useState<string>("");
   const queryClient = useQueryClient();
   const promptingMutating = useMutation({

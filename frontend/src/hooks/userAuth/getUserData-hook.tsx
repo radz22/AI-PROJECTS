@@ -1,14 +1,20 @@
+import { useEffect } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { userDataType } from "../../types/user-data-type";
 import { getUserData } from "../../services/userAuth/userAuth-service";
-import { useState } from "react";
+import { useAtom } from "jotai";
+import { userAtom } from "../../atom/userAtom";
+import { getFromLocalStorage } from "../../services/localstorage/localStorageService";
+import geminiAiHook from "../gemini/geminiAi-hook";
 export const getUser = () => {
-  const [userData, setUserData] = useState<userDataType | null>(null);
+  const { setChatAi } = geminiAiHook();
+  const [userData, setUserData] = useAtom(userAtom);
+  const token = getFromLocalStorage("token");
   const queryClient = useQueryClient();
   const userDataMutation = useMutation({
     mutationFn: getUserData,
     onSuccess: (data) => {
       setUserData(data.data);
+
       queryClient.invalidateQueries({ queryKey: ["userauth"] });
     },
     onError: (error: any) => {
@@ -16,9 +22,12 @@ export const getUser = () => {
     },
   });
 
-  const handleGetUserData = (token: null | string) => {
+  const handleGetUserData = () => {
     userDataMutation.mutate(token);
   };
+  useEffect(() => {
+    handleGetUserData();
+  }, [token]);
 
-  return { handleGetUserData, userDataMutation, userData };
+  return { userData };
 };

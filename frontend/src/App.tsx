@@ -11,6 +11,9 @@ const Signin = lazy(() =>
 const Signup = lazy(() =>
   import("./pages/Signup").then((module) => ({ default: module.Signup }))
 );
+const Settings = lazy(() =>
+  import("./pages/Settings").then((module) => ({ default: module.Settings }))
+);
 function App() {
   const login = getFromLocalStorage("login");
 
@@ -21,6 +24,7 @@ function App() {
           <Routes>
             <Route path="/" element={login ? <Home /> : <Signin />} />
             <Route path="/page/signup" element={<Signup />} />
+            <Route path="/page/settings" element={<Settings />} />
           </Routes>
         </Suspense>
       </Router>

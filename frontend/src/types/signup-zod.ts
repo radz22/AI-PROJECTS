@@ -1,6 +1,5 @@
 import { z } from "zod";
 
-// Define the signup schema using Zod
 export const signupSchema = z.object({
   email: z.string().email(), // Validates that the email is a string and follows the email format
   displayname: z.string().min(4, "Must be 4 or more characters long"), // Validates display name is at least 4 characters long
@@ -18,3 +17,4 @@ export const signupSchema = z.object({
 
 // Infer TypeScript type from the schema
 export type signupType = z.infer<typeof signupSchema>;
+export type updateUserType = z.infer<typeof signupSchema>;

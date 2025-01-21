@@ -4,6 +4,7 @@ import { generateToken } from "../services/jwtService";
 import { findEmailService, createAccount } from "../services/googleAuthService";
 import { checkPasswordValid, getUser } from "../services/userAuthService";
 import { verifyToken } from "../services/jwtService";
+import { updateUserAccount } from "../services/userAuthService";
 export const signIn = async (req: Request, res: Response): Promise<void> => {
   try {
     const { email, password } = req.body;
@@ -112,6 +113,36 @@ export const getUserData = async (
       message: "User data retrieved successfully",
       data: findUserData.user,
     });
+  } catch (error) {
+    console.error("Error in getUserData controller:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+export const updateUser = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const { id, email, password, displayname, image, cloudinaryid } = req.body;
+
+    if (!cloudinaryid) {
+      res.status(400).json({ message: "No Cloudinary Id" });
+      return;
+    }
+    const updateUser = await updateUserAccount(
+      id,
+      email,
+      password,
+      displayname,
+      image,
+      cloudinaryid
+    );
+
+    if (updateUser.success == false) {
+      res.status(400).json({ message: updateUser.errormessage });
+      return;
+    }
+    res.status(200).json({ message: updateUser.message });
   } catch (error) {
     console.error("Error in getUserData controller:", error);
     res.status(500).json({ message: "Internal Server Error" });
