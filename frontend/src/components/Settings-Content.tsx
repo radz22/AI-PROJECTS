@@ -1,28 +1,40 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { updateUserType, signupSchema } from "../types/signup-zod";
+import { updateUserType, updateData } from "../types/signup-zod";
 import { getUser } from "../hooks/userAuth/getUserData-hook";
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { UserUpdateData } from "../hooks/userAuth/userUpdateData";
 export const SettingsContent = () => {
   const { userData } = getUser();
-  const navigate = useNavigate();
   const [image, setImage] = useState<string>("");
-
+  const { handleUpdateUser, updateUserMutation } = UserUpdateData();
   const {
     register,
     handleSubmit,
     formState: { errors },
     reset,
   } = useForm<updateUserType>({
-    resolver: zodResolver(signupSchema),
+    resolver: zodResolver(updateData),
     defaultValues: {
       displayname: "",
       email: "",
       password: "",
     },
   });
-  const onSubmit = (data: updateUserType) => {};
+
+  const onSubmit = (data: updateUserType) => {
+    const dataUser: any = {
+      _id: userData?._id,
+      email: data.email,
+      displayname: data.displayname,
+      password: data.password,
+      cloudinaryid: userData?.cloudinaryid,
+      image: image,
+    };
+
+    handleUpdateUser(dataUser);
+  };
 
   useEffect(() => {
     if (userData) {
@@ -32,25 +44,21 @@ export const SettingsContent = () => {
         email: userData.email,
       });
     }
-  }, [userData]);
+  }, [userData, reset]);
+
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
       const reader = new FileReader();
-
       reader.onload = () => {
         if (reader.result) {
           setImage(reader.result as string);
         }
       };
-
       reader.readAsDataURL(file);
     }
   };
 
-  const handleCancel = () => {
-    navigate("/");
-  };
   return (
     <div className="w-[80%] flex items-center justify-center h-screen">
       <div className="w-[90%] bg-[#ffffff] px-5 py-5 rounded-md pb-10">
@@ -79,12 +87,12 @@ export const SettingsContent = () => {
         <div className="mt-10 bg-[#ffffff] shadow-xl shadow-[#c1c1c1] w-full rounded-md">
           <div className="w-full bg-[#408fec] rounded-md">
             <div className="py-5 px-5">
-              <h1 className="text-xl  text-[#ffffff] font-medium">
+              <h1 className="text-xl text-[#ffffff] font-medium">
                 Accounting Setting
               </h1>
             </div>
           </div>
-          <div className="py-3 px-10 mt-5 pb-10 flex items-center gap-10 ">
+          <div className="py-3 px-10 mt-5 pb-10 flex items-center gap-10">
             <div className="w-[70%]">
               <form className="mt-10" onSubmit={handleSubmit(onSubmit)}>
                 <div>
@@ -97,7 +105,7 @@ export const SettingsContent = () => {
                     <input
                       {...register("displayname")}
                       placeholder="Enter your Display Name"
-                      className="w-full  border border-[#636364] mt-2 px-2 py-3 rounded-lg "
+                      className="w-full border border-[#636364] mt-2 px-2 py-3 rounded-lg"
                     />
                   </div>
                   <div>
@@ -118,7 +126,7 @@ export const SettingsContent = () => {
                     <input
                       {...register("email")}
                       placeholder="Enter your Email"
-                      className="w-full  border border-[#636364] mt-2 px-2 py-3 rounded-lg "
+                      className="w-full border border-[#636364] mt-2 px-2 py-3 rounded-lg"
                       readOnly
                     />
                   </div>
@@ -128,7 +136,6 @@ export const SettingsContent = () => {
                     )}
                   </div>
                 </div>
-
                 <div className="mt-5">
                   <div>
                     <h1 className="text-lg text-[#181818] font-semibold">
@@ -138,8 +145,9 @@ export const SettingsContent = () => {
                   <div>
                     <input
                       {...register("password")}
+                      type="password"
                       placeholder="Enter your Password"
-                      className="w-full  border border-[#636364] mt-2 px-2 py-3 rounded-lg "
+                      className="w-full border border-[#636364] mt-2 px-2 py-3 rounded-lg"
                     />
                   </div>
                   <div>
@@ -150,23 +158,31 @@ export const SettingsContent = () => {
                     )}
                   </div>
                 </div>
+                <div className="flex items-center justify-evenly mt-10 w-full">
+                  <div className="w-[30%]">
+                    <Link to="/">
+                      <button className="flex items-center justify-center bg-gray-300 text-black px-3 py-3 w-full rounded-lg">
+                        Cancel
+                      </button>
+                    </Link>
+                  </div>
+                  <div className="w-[30%]">
+                    <button
+                      type="submit"
+                      disabled={updateUserMutation.isPending}
+                      className="flex items-center justify-center text-white bg-[#408fec] px-3 py-3 w-full rounded-lg"
+                    >
+                      {updateUserMutation.isPending ? "Loading" : "Save"}
+                    </button>
+                  </div>
+                </div>
               </form>
-
-              <div className="flex items-center justify-evenly mt-10">
-                <button className="flex items-center justify-center bg-gray-300 text-black px-3 py-3 w-[30%] rounded-lg">
-                  <Link to="/">Cancel</Link>
-                </button>
-
-                <button className="flex items-center justify-center  text-white bg-[#408fec] px-3 py-3 w-[30%] rounded-lg">
-                  Save
-                </button>
-              </div>
             </div>
             <div className="w-[30%]">
               <div className="w-full flex items-center justify-center">
                 <img
                   src={image}
-                  className="w-[120px] h-[120px] rounded-full "
+                  className="w-[120px] h-[120px] rounded-full"
                   alt="Uploaded"
                 />
               </div>
@@ -182,7 +198,7 @@ export const SettingsContent = () => {
                   type="file"
                   accept="image/*"
                   className="hidden"
-                  onChange={handleImageUpload} // Handle file selection
+                  onChange={handleImageUpload}
                 />
               </div>
             </div>

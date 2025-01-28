@@ -123,14 +123,14 @@ export const updateUser = async (
   res: Response
 ): Promise<void> => {
   try {
-    const { id, email, password, displayname, image, cloudinaryid } = req.body;
+    const { _id, email, password, displayname, image, cloudinaryid } = req.body;
 
     if (!cloudinaryid) {
       res.status(400).json({ message: "No Cloudinary Id" });
       return;
     }
     const updateUser = await updateUserAccount(
-      id,
+      _id,
       email,
       password,
       displayname,

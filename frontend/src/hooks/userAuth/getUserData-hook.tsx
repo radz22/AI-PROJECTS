@@ -14,7 +14,6 @@ export const getUser = () => {
     mutationFn: getUserData,
     onSuccess: (data) => {
       setUserData(data.data);
-
       queryClient.invalidateQueries({ queryKey: ["userauth"] });
     },
     onError: (error: any) => {
