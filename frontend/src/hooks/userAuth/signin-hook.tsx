@@ -2,6 +2,7 @@ import { userType } from "../../types/profile-type";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { userSignin } from "../../services/userAuth/userAuth-service";
 import { saveToLocalStorage } from "../../services/localstorage/localStorageService";
+import { handleErrorAlert } from "../../components/alert-button";
 export const UserAuthSiginHook = () => {
   const queryClient = useQueryClient();
   const signinMutation = useMutation({
@@ -15,11 +16,12 @@ export const UserAuthSiginHook = () => {
     },
     onError: (error: any) => {
       console.log(error?.data?.msg || error?.data?.message);
+      handleErrorAlert(error.data.message);
     },
   });
 
   const handleUserSignin = (user: userType) => {
     signinMutation.mutate(user);
   };
-  return { handleUserSignin };
+  return { handleUserSignin, signinMutation };
 };

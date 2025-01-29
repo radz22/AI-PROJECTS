@@ -41,7 +41,7 @@ export const signIn = async (req: Request, res: Response): Promise<void> => {
       token: token,
     });
   } catch (error) {
-    res.status(500).send("Internal Server Error");
+    res.status(500).json({ message: "Internal Server Error" });
   }
 };
 
@@ -68,9 +68,9 @@ export const signUp = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
-    res.status(500).json({ msg: createAccountResult.message });
+    res.status(400).json({ msg: createAccountResult.message });
   } catch (error) {
-    res.status(500).send("Internal Server Error");
+    res.status(500).json({ message: "Internal Server Error" });
   }
 };
 
@@ -114,7 +114,6 @@ export const getUserData = async (
       data: findUserData.user,
     });
   } catch (error) {
-    console.error("Error in getUserData controller:", error);
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
@@ -144,7 +143,6 @@ export const updateUser = async (
     }
     res.status(200).json({ message: updateUser.message });
   } catch (error) {
-    console.error("Error in getUserData controller:", error);
     res.status(500).json({ message: "Internal Server Error" });
   }
 };

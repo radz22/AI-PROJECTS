@@ -3,6 +3,7 @@ import { googleSignup } from "../../services/googleAuth/googleAuth-service";
 import { userType } from "../../types/profile-type";
 import { saveToLocalStorage } from "../../services/localstorage/localStorageService";
 import { useNavigate } from "react-router-dom";
+import { handleErrorAlert } from "../../components/alert-button";
 export const GoogleAuthSignupHook = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
@@ -16,7 +17,7 @@ export const GoogleAuthSignupHook = () => {
       queryClient.invalidateQueries({ queryKey: ["google"] });
     },
     onError: (error: any) => {
-      console.log(error?.data?.msg || error?.data?.message);
+      handleErrorAlert(error.data.message);
     },
   });
 

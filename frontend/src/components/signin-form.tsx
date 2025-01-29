@@ -6,9 +6,11 @@ import { Link } from "react-router-dom";
 import { GoogleAuth } from "./useGoogleAuth";
 import { GoogleAuthSiginHook } from "../hooks/googleAuth/signin-hook";
 import { UserAuthSiginHook } from "../hooks/userAuth/signin-hook";
+import { OrbitProgress } from "react-loading-indicators";
+
 export const SignInForm = () => {
   const { handleGoogleSignin } = GoogleAuthSiginHook();
-  const { handleUserSignin } = UserAuthSiginHook();
+  const { handleUserSignin, signinMutation } = UserAuthSiginHook();
 
   const {
     register,
@@ -26,45 +28,53 @@ export const SignInForm = () => {
     <div className="px-3 flex items-center justify-center flex-col">
       <div className="w-[60%]">
         <div>
-          <h1 className="text-4xl font-semibold text-center tracking-wide uppercase	">
+          <h1 className="text-4xl font-semibold text-center tracking-wide uppercase max-xl:text-3xl	">
             Welcome back
           </h1>
-          <p className="text-[#636364] text-lg mt-2 text-center">
+          <p className="text-[#636364] text-lg mt-2 text-center  max-xl:text-sm">
             Welcome back! Please enter your details.
           </p>
         </div>
         <form className="mt-10" onSubmit={handleSubmit(onSubmit)}>
           <div>
             <div>
-              <h1 className="text-lg text-[#181818] font-semibold">Email</h1>
+              <h1 className="text-lg text-[#181818] font-semibold  max-xl:text-base">
+                Email
+              </h1>
             </div>
             <div>
               <input
                 {...register("email")}
                 placeholder="Enter your Email"
-                className="w-full  border border-[#636364] mt-2 px-2 py-3 rounded-lg "
+                className="w-full  border border-[#636364] mt-2 px-2 py-3 rounded-lg  max-xl:text-base"
               />
             </div>
             <div>
               {errors.email && (
-                <p className="text-[#EA454C]">{errors.email.message}</p>
+                <p className="text-[#EA454C]  max-xl:text-base">
+                  {errors.email.message}
+                </p>
               )}
             </div>
           </div>
           <div className="mt-5">
             <div>
-              <h1 className="text-lg text-[#181818] font-semibold">Password</h1>
+              <h1 className="text-lg text-[#181818] font-semibold  max-xl:text-base">
+                Password
+              </h1>
             </div>
             <div>
               <input
                 {...register("password")}
                 placeholder="Enter your Password"
-                className="w-full  border border-[#636364] mt-2 px-2 py-3 rounded-lg "
+                className="w-full  border border-[#636364] mt-2 px-2 py-3 rounded-lg max-xl:text-base "
               />
             </div>
             <div>
               {errors.password && (
-                <p className="text-[#EA454C]">{errors.password.message}</p>
+                <p className="text-[#EA454C]  max-xl:text-base">
+                  {errors.password.message}
+                </p>
               )}
             </div>
           </div>
@@ -84,10 +94,20 @@ export const SignInForm = () => {
           </div>
           <div className="w-full mt-8">
             <button
-              className="text-[#FFFFFF] bg-[#EA454C] text-center w-full py-3 px-3 text-lg font-semibold rounded-lg"
+              className="text-[#FFFFFF] bg-[#EA454C] text-center w-full py-3 px-3 text-lg font-semibold rounded-lg "
               type="submit"
+              disabled={signinMutation.isPending}
             >
-              Sign in
+              {signinMutation.isPending ? (
+                <OrbitProgress
+                  variant="track-disc"
+                  color="#ffffff"
+                  style={{ fontSize: "5px" }}
+                  textColor="#ffffff"
+                />
+              ) : (
+                "Sign in"
+              )}
             </button>
           </div>
 

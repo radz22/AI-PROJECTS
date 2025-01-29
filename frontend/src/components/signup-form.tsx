@@ -5,9 +5,12 @@ import { GoogleAuthSignupHook } from "../hooks/googleAuth/signup-hook";
 import { Link } from "react-router-dom";
 import { GoogleAuth } from "./useGoogleAuth";
 import { UserAuthSignupHook } from "../hooks/userAuth/signup-hook";
+import { imageUrl } from "../utils/image";
+import { Atom, OrbitProgress } from "react-loading-indicators";
+
 export const SignUpForm = () => {
   const { handleGoogleSignup } = GoogleAuthSignupHook();
-  const { handleUserSignup } = UserAuthSignupHook();
+  const { handleUserSignup, signUpMutation } = UserAuthSignupHook();
   const {
     register,
     handleSubmit,
@@ -17,7 +20,13 @@ export const SignUpForm = () => {
   });
 
   const onSubmit = (data: signupType) => {
-    handleUserSignup(data);
+    const datas = {
+      email: data.email,
+      password: data.password,
+      displayname: data.displayname,
+      image: imageUrl,
+    };
+    handleUserSignup(datas);
   };
   return (
     <div className="px-3 flex items-center justify-center flex-col">
@@ -103,8 +112,18 @@ export const SignUpForm = () => {
             <button
               className="text-[#FFFFFF] bg-[#EA454C] text-center w-full py-3 px-3 text-lg font-semibold rounded-lg"
               type="submit"
+              disabled={signUpMutation.isPending}
             >
-              Sign in
+              {signUpMutation.isPending ? (
+                <OrbitProgress
+                  variant="track-disc"
+                  color="#ffffff"
+                  style={{ fontSize: "5px" }}
+                  textColor="#ffffff"
+                />
+              ) : (
+                "Sign up"
+              )}
             </button>
           </div>
           <div>

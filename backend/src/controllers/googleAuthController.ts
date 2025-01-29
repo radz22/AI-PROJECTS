@@ -10,7 +10,9 @@ export const googleAuthSignin = async (
     const { email } = req.body;
     const existingUser = await findEmailService(email);
     if (!existingUser) {
-      res.status(404).json({ msg: "Account not found. Please sign up first." });
+      res
+        .status(404)
+        .json({ message: "Account not found. Please sign up first." });
       return;
     }
     const token = generateToken({ id: existingUser._id });
@@ -20,7 +22,7 @@ export const googleAuthSignin = async (
       login: true,
     });
   } catch (error) {
-    res.status(500).send("Internal Server Error");
+    res.status(500).json({ message: "Internal Server Error" });
   }
 };
 
@@ -33,7 +35,7 @@ export const googleAuthSignup = async (
 
     const existingUser = await findEmailService(email);
     if (existingUser) {
-      res.status(400).json({ msg: "Account already exists. Please sign in." });
+      res.status(400).json({ message: "Account already exists" });
       return;
     }
 
@@ -51,10 +53,10 @@ export const googleAuthSignup = async (
       return;
     }
 
-    res.status(500).json({ msg: createAccountResult.message });
+    res.status(400).json({ message: createAccountResult.message });
   } catch (error) {
     if (!res.headersSent) {
-      res.status(500).json({ msg: "Internal Server Error" });
+      res.status(500).json({ message: "Internal Server Error" });
     }
   }
 };
