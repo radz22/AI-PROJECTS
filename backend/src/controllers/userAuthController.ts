@@ -2,9 +2,17 @@ import { Request, Response } from "express";
 import bcrypt from "bcrypt"; // Import bcrypt
 import { generateToken } from "../services/jwtService";
 import { findEmailService, createAccount } from "../services/googleAuthService";
-import { checkPasswordValid, getUser } from "../services/userAuthService";
+import {
+  checkPasswordValid,
+  getUser,
+  sendLink,
+} from "../services/userAuthService";
 import { verifyToken } from "../services/jwtService";
-import { updateUserAccount } from "../services/userAuthService";
+import {
+  updateUserAccount,
+  forgotPasswordService,
+} from "../services/userAuthService";
+
 export const signIn = async (req: Request, res: Response): Promise<void> => {
   try {
     const { email, password } = req.body;
@@ -142,6 +150,47 @@ export const updateUser = async (
       return;
     }
     res.status(200).json({ message: updateUser.message });
+  } catch (error) {
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+export const forgotPassword = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const { id } = req.params;
+    const { password } = req.body;
+
+    const forgotPasswordResult = await forgotPasswordService(id, password);
+    if (!forgotPasswordResult) {
+      res.status(400).json({ message: "Password not updated" });
+    }
+    res.status(200).json({ message: "Password updated successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+export const resetPassword = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const { email } = req.body;
+    const emailCheck = await findEmailService(email);
+
+    if (!emailCheck) {
+      res.status(400).json({ message: "Account not exists" });
+      return;
+    }
+
+    const sendLinkForgot = await sendLink(email);
+
+    if (!sendLinkForgot) {
+      res.status(400).json({ message: "Link not sent" });
+    }
+    res.status(200).json({ message: "Link sent successfully" });
   } catch (error) {
     res.status(500).json({ message: "Internal Server Error" });
   }
