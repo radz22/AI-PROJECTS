@@ -1,27 +1,26 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { signinSchema } from "../types/signin-zod";
-import { signinType } from "../types/signin-zod";
 import { Link } from "react-router-dom";
-import { GoogleAuth } from "./useGoogleAuth";
-import { GoogleAuthSiginHook } from "../hooks/googleAuth/signin-hook";
-import { UserAuthSiginHook } from "../hooks/userAuth/signin-hook";
 import { OrbitProgress } from "react-loading-indicators";
-
-export const SignInForm = () => {
-  const { handleGoogleSignin } = GoogleAuthSiginHook();
-  const { handleUserSignin, signinMutation } = UserAuthSiginHook();
-
+import { ResetPasswordHook } from "../hooks/userAuth/reset-password-hook";
+import {
+  resetPasswordType,
+  resetPasswordSchema,
+} from "../types/reset-password";
+export const ResetPasswordComponent = () => {
+  const { handleResetPassword, resetPasswordMutation } = ResetPasswordHook();
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<signinType>({
-    resolver: zodResolver(signinSchema),
+    reset,
+  } = useForm<resetPasswordType>({
+    resolver: zodResolver(resetPasswordSchema),
   });
 
-  const onSubmit = (data: signinType) => {
-    handleUserSignin(data);
+  const onSubmit = (data: resetPasswordType) => {
+    handleResetPassword(data);
+    reset();
   };
 
   return (
@@ -32,7 +31,7 @@ export const SignInForm = () => {
             Welcome back
           </h1>
           <p className="text-[#636364] text-lg mt-2 text-center  max-xl:text-sm">
-            Welcome back! Please enter your details.
+            Welcome back! Please enter your Email for Reset Password.
           </p>
         </div>
         <form className="mt-10" onSubmit={handleSubmit(onSubmit)}>
@@ -57,50 +56,14 @@ export const SignInForm = () => {
               )}
             </div>
           </div>
-          <div className="mt-5">
-            <div>
-              <h1 className="text-lg text-[#181818] font-semibold  max-xl:text-base">
-                Password
-              </h1>
-            </div>
-            <div>
-              <input
-                {...register("password")}
-                placeholder="Enter your Password"
-                className="w-full  border border-[#636364] mt-2 px-2 py-3 rounded-lg max-xl:text-base "
-              />
-            </div>
-            <div>
-              {errors.password && (
-                <p className="text-[#EA454C]  max-xl:text-base">
-                  {errors.password.message}
-                </p>
-              )}
-            </div>
-          </div>
 
-          <div className="mt-5 flex items-center justify-between">
-            <div className="flex itemss-center gap-2">
-              <div>
-                <input type="checkbox" />
-              </div>
-              <div>
-                <h1 className="text-[#181818]">Remember me</h1>
-              </div>
-            </div>
-            <div>
-              <Link to="page/resetpassword">
-                <h1 className="text-[#181818]">Forgot password</h1>
-              </Link>
-            </div>
-          </div>
           <div className="w-full mt-8">
             <button
               className="text-[#FFFFFF] bg-[#EA454C] text-center w-full py-3 px-3 text-lg font-semibold rounded-lg "
               type="submit"
-              disabled={signinMutation.isPending}
+              disabled={resetPasswordMutation.isPending}
             >
-              {signinMutation.isPending ? (
+              {resetPasswordMutation.isPending ? (
                 <OrbitProgress
                   variant="track-disc"
                   color="#ffffff"
@@ -108,14 +71,11 @@ export const SignInForm = () => {
                   textColor="#ffffff"
                 />
               ) : (
-                "Sign in"
+                "Submit "
               )}
             </button>
           </div>
 
-          <div>
-            <GoogleAuth hook={handleGoogleSignin} />
-          </div>
           <div className="mt-5">
             <p className="text-[#595959] text-center font-semibold">
               Don’t have an account?

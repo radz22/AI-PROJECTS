@@ -14,6 +14,16 @@ const Signup = lazy(() =>
 const Settings = lazy(() =>
   import("./pages/Settings").then((module) => ({ default: module.Settings }))
 );
+const ResetPassword = lazy(() =>
+  import("./pages/ResetPassword").then((module) => ({
+    default: module.ResetPassword,
+  }))
+);
+const ForgotPassword = lazy(() =>
+  import("./pages/ForgotPassword").then((module) => ({
+    default: module.ForgotPassword,
+  }))
+);
 function App() {
   const login = getFromLocalStorage("login");
 
@@ -25,6 +35,11 @@ function App() {
             <Route path="/" element={login ? <Home /> : <Signin />} />
             <Route path="/page/signup" element={<Signup />} />
             <Route path="/page/settings" element={<Settings />} />
+            <Route path="/page/resetpassword" element={<ResetPassword />} />
+            <Route
+              path="/page/forgotpassword/:id"
+              element={<ForgotPassword />}
+            />
           </Routes>
         </Suspense>
       </Router>
