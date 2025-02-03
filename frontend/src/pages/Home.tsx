@@ -1,10 +1,8 @@
 import { Header } from "../components/header";
 import { MessageBox } from "../components/messageBox";
 import { getUser } from "../hooks/userAuth/getUserData-hook";
-import { useEffect } from "react";
-import { getFromLocalStorage } from "../services/localstorage/localStorageService";
+
 export const Home = () => {
-  const token = getFromLocalStorage("token");
   const { userData } = getUser();
 
   return (

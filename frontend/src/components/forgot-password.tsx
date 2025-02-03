@@ -28,19 +28,19 @@ export const ForgotPasswordComponent = () => {
 
   return (
     <div className="px-3 flex items-center justify-center flex-col">
-      <div className="w-[60%]">
+      <div className="w-[60%] max-lg:w-[90%] max-md:w-[70%] max-sm:w-[90%]">
         <div>
-          <h1 className="text-4xl font-semibold text-center tracking-wide uppercase max-xl:text-3xl	">
+          <h1 className="text-4xl font-semibold text-center tracking-wide uppercase max-xl:text-3xl	 max-lg:text-2xl	">
             Welcome back
           </h1>
           <p className="text-[#636364] text-lg mt-2 text-center  max-xl:text-sm">
-            Welcome back! Please enter your Password .
+            Welcome back! Please enter your Password
           </p>
         </div>
         <form className="mt-10" onSubmit={handleSubmit(onSubmit)}>
           <div>
             <div>
-              <h1 className="text-lg text-[#181818] font-semibold  max-xl:text-base">
+              <h1 className="text-lg text-[#181818] font-semibold  max-xl:text-base max-lg:text-sm">
                 Password
               </h1>
             </div>
@@ -48,12 +48,12 @@ export const ForgotPasswordComponent = () => {
               <input
                 {...register("password")}
                 placeholder="Enter your New Password"
-                className="w-full  border border-[#636364] mt-2 px-2 py-3 rounded-lg  max-xl:text-base"
+                className="w-full  border border-[#636364] mt-2 px-2 py-3 rounded-lg  max-xl:text-base  max-lg:text-sm"
               />
             </div>
             <div>
               {errors.password && (
-                <p className="text-[#EA454C]  max-xl:text-base">
+                <p className="text-[#EA454C]  max-xl:text-base  max-lg:text-sm">
                   {errors.password.message}
                 </p>
               )}
@@ -80,7 +80,7 @@ export const ForgotPasswordComponent = () => {
           </div>
 
           <div className="mt-5">
-            <p className="text-[#595959] text-center font-semibold">
+            <p className="text-[#595959] text-center font-semibold max-lg:text-sm">
               have an account?
               <Link to="/">
                 <span className="text-[#EA454C]">Sign in!</span>

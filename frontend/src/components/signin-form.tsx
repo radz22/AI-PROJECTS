@@ -26,9 +26,9 @@ export const SignInForm = () => {
 
   return (
     <div className="px-3 flex items-center justify-center flex-col">
-      <div className="w-[60%]">
+      <div className="w-[60%] max-lg:w-[90%] max-md:w-[70%] max-sm:w-[90%]">
         <div>
-          <h1 className="text-4xl font-semibold text-center tracking-wide uppercase max-xl:text-3xl	">
+          <h1 className="text-4xl font-semibold text-center tracking-wide uppercase max-xl:text-3xl max-lg:text-2xl	">
             Welcome back
           </h1>
           <p className="text-[#636364] text-lg mt-2 text-center  max-xl:text-sm">
@@ -38,7 +38,7 @@ export const SignInForm = () => {
         <form className="mt-10" onSubmit={handleSubmit(onSubmit)}>
           <div>
             <div>
-              <h1 className="text-lg text-[#181818] font-semibold  max-xl:text-base">
+              <h1 className="text-lg text-[#181818] font-semibold  max-xl:text-base max-lg:text-sm">
                 Email
               </h1>
             </div>
@@ -46,12 +46,12 @@ export const SignInForm = () => {
               <input
                 {...register("email")}
                 placeholder="Enter your Email"
-                className="w-full  border border-[#636364] mt-2 px-2 py-3 rounded-lg  max-xl:text-base"
+                className="w-full  border border-[#636364] mt-2 px-2 py-3 rounded-lg  max-xl:text-base  max-lg:text-sm"
               />
             </div>
             <div>
               {errors.email && (
-                <p className="text-[#EA454C]  max-xl:text-base">
+                <p className="text-[#EA454C]  max-xl:text-base  max-lg:text-sm">
                   {errors.email.message}
                 </p>
               )}
@@ -67,12 +67,13 @@ export const SignInForm = () => {
               <input
                 {...register("password")}
                 placeholder="Enter your Password"
-                className="w-full  border border-[#636364] mt-2 px-2 py-3 rounded-lg max-xl:text-base "
+                type="Password"
+                className="w-full  border border-[#636364] mt-2 px-2 py-3 rounded-lg  max-xl:text-base  max-lg:text-sm"
               />
             </div>
             <div>
               {errors.password && (
-                <p className="text-[#EA454C]  max-xl:text-base">
+                <p className="text-[#EA454C]  max-xl:text-base  max-lg:text-sm">
                   {errors.password.message}
                 </p>
               )}
@@ -80,17 +81,19 @@ export const SignInForm = () => {
           </div>
 
           <div className="mt-5 flex items-center justify-between">
-            <div className="flex itemss-center gap-2">
+            <div className="flex items-center gap-2">
               <div>
                 <input type="checkbox" />
               </div>
               <div>
-                <h1 className="text-[#181818]">Remember me</h1>
+                <h1 className="text-[#181818]  max-lg:text-sm">Remember me</h1>
               </div>
             </div>
             <div>
               <Link to="page/resetpassword">
-                <h1 className="text-[#181818]">Forgot password</h1>
+                <h1 className="text-[#181818] max-lg:text-sm">
+                  Forgot password
+                </h1>
               </Link>
             </div>
           </div>
@@ -117,7 +120,7 @@ export const SignInForm = () => {
             <GoogleAuth hook={handleGoogleSignin} />
           </div>
           <div className="mt-5">
-            <p className="text-[#595959] text-center font-semibold">
+            <p className="text-[#595959] text-center font-semibold max-lg:text-sm">
               Don’t have an account?
               <Link to="/page/signup">
                 <span className="text-[#EA454C]"> Sign up fo free!</span>

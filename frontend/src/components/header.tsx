@@ -20,14 +20,14 @@ export const Header: React.FC<headerProps> = ({ data }) => {
     <div className="relative w-full">
       <div className="w-full flex justify-between ">
         <div>
-          <h1 className="text-xl text-[#777777]">CHAT BOSS</h1>
+          <h1 className="text-xl text-[#777777] max-md:text-lg">CHAT BOSS</h1>
         </div>
         <div className="w-auto ">
           <div className="w-full flex item-center justify-center">
             <div onClick={handleShow}>
               <img
                 src={data?.image}
-                className="h-[40px] w-[40px] rounded-full cursor-pointer object-cover"
+                className="h-[40px] w-[40px] rounded-full cursor-pointer object-cover max-md:h-[30px] max-md:w-[30px]"
               />
             </div>
           </div>
