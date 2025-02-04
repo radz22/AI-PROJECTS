@@ -1,13 +1,16 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import { getGeminiResponse } from "../services/geminiService";
 export const generateResponse = async (
   req: Request,
-  res: Response
+  res: Response,
+  next: NextFunction
 ): Promise<void> => {
   const { prompt } = req.body;
   if (!prompt) {
-    res.status(400).json({ error: "Prompt is required" });
-    return;
+    return next({
+      status: 400,
+      message: "Prompt is required",
+    });
   }
 
   try {
@@ -16,7 +19,7 @@ export const generateResponse = async (
       text: response,
       name: "SANTY-AI",
     });
-  } catch (error: any) {
-    res.status(500).json({ error: error.message || "Internal Server Error" });
+  } catch (error) {
+    next(error);
   }
 };

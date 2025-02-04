@@ -3,7 +3,7 @@ import { Sidebar } from "../components/Sidebar";
 import { SettingsContent } from "../components/Settings-Content";
 export const Settings = () => {
   return (
-    <div className="w-full flex  h-screen bg-[#f5f5f5]">
+    <div className="w-full flex  h-screen bg-[#f5f5f5] max-lg:flex-col">
       <Sidebar />
       <SettingsContent />
     </div>

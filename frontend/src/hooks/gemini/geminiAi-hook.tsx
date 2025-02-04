@@ -9,7 +9,6 @@ const geminiAiHook = () => {
       name: "SANTY-AI",
     },
   ]);
-  const [userInput, setUserInput] = useState<string>("");
   const queryClient = useQueryClient();
   const promptingMutating = useMutation({
     mutationFn: handlePrompting,
@@ -24,15 +23,15 @@ const geminiAiHook = () => {
   });
 
   const handleAiPrompting = (prompt: aiPosttype) => {
-    setChatAi([...chatAi, { text: userInput, name: prompt.name }]);
+    setChatAi([...chatAi, { text: prompt.prompt, name: prompt.name }]);
+
     promptingMutating.mutate(prompt.prompt);
   };
 
   return {
     handleAiPrompting,
     promptingMutating,
-    setUserInput,
-    userInput,
+
     chatAi,
     setChatAi,
   };

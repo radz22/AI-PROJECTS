@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import { GoogleAuth } from "./useGoogleAuth";
 import { UserAuthSignupHook } from "../hooks/userAuth/signup-hook";
 import { imageUrl } from "../utils/image";
-import { Atom, OrbitProgress } from "react-loading-indicators";
+import { OrbitProgress } from "react-loading-indicators";
 
 export const SignUpForm = () => {
   const { handleGoogleSignup } = GoogleAuthSignupHook();

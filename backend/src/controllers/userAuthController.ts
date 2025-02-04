@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import bcrypt from "bcrypt"; // Import bcrypt
 import { generateToken } from "../services/jwtService";
 import { findEmailService, createAccount } from "../services/googleAuthService";
@@ -13,35 +13,35 @@ import {
   forgotPasswordService,
 } from "../services/userAuthService";
 
-export const signIn = async (req: Request, res: Response): Promise<void> => {
+export const signIn = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
   try {
     const { email, password } = req.body;
     const emailCheck = await findEmailService(email);
     if (!emailCheck) {
-      res.status(400).json({ message: "Account not exists. Please Sign Up." });
-      return;
+      return next({
+        status: 400,
+        message: "Account not exists. Please Sign Up.",
+      });
     }
     const checkPassword = await checkPasswordValid(emailCheck.password);
 
     if (!checkPassword.success) {
-      res.status(400).json({
-        message: checkPassword.message,
-        password: checkPassword.password,
-      });
-      return;
+      return next({ status: 400, message: checkPassword.message });
     }
 
     if (!checkPassword.password) {
-      res.status(500).json({ message: "Error" });
-      return;
+      return next({ status: 400, message: "error" });
     }
     const isPasswordValid = await bcrypt.compare(
       password,
       checkPassword.password
     );
     if (!isPasswordValid) {
-      res.status(401).send({ message: "Invalid password" });
-      return;
+      return next({ status: 400, message: "Invalid password" });
     }
     const token = generateToken({ id: emailCheck._id });
     res.status(200).send({
@@ -49,18 +49,24 @@ export const signIn = async (req: Request, res: Response): Promise<void> => {
       token: token,
     });
   } catch (error) {
-    res.status(500).json({ message: "Internal Server Error" });
+    next(error);
   }
 };
 
-export const signUp = async (req: Request, res: Response): Promise<void> => {
+export const signUp = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
   try {
     const { email, password, displayname, image } = req.body;
     const emailCheck = await findEmailService(email);
 
     if (emailCheck) {
-      res.status(400).json({ message: "Account not exists" });
-      return;
+      return next({
+        status: 400,
+        message: "Account not exists",
+      });
     }
     const createAccountResult = await createAccount(
       email,
@@ -68,23 +74,26 @@ export const signUp = async (req: Request, res: Response): Promise<void> => {
       password,
       image
     );
-    if (createAccountResult.success) {
-      res.status(201).json({
-        token: createAccountResult.token,
-        login: createAccountResult.success,
+    if (!createAccountResult.success) {
+      return next({
+        status: 400,
+        message: createAccountResult.message,
       });
-      return;
     }
 
-    res.status(400).json({ msg: createAccountResult.message });
+    res.status(201).json({
+      token: createAccountResult.token,
+      login: createAccountResult.success,
+    });
   } catch (error) {
-    res.status(500).json({ message: "Internal Server Error" });
+    next(error);
   }
 };
 
 export const getUserData = async (
   req: Request,
-  res: Response
+  res: Response,
+  next: NextFunction
 ): Promise<void> => {
   try {
     const { id } = req.params;
@@ -94,18 +103,20 @@ export const getUserData = async (
       tokenPayload = verifyToken(id);
     } catch (err: any) {
       if (err.message === "Token has expired") {
-        res
-          .status(401)
-          .json({ message: "Token has expired. Please log in again." });
-        return;
+        return next({
+          status: 401,
+          message: "Token has expired. Please log in again.",
+        });
       } else if (err.message === "Invalid token") {
-        res
-          .status(401)
-          .json({ message: "Invalid token. Authentication failed." });
-        return;
+        return next({
+          status: 401,
+          message: "Invalid token. Authentication failed.",
+        });
       } else {
-        res.status(400).json({ message: "Token verification failed." });
-        return;
+        return next({
+          status: 400,
+          message: "Token verification failed.",
+        });
       }
     }
 
@@ -113,8 +124,10 @@ export const getUserData = async (
     const findUserData = await getUser(userId);
 
     if (!findUserData.success) {
-      res.status(404).json({ message: "User account does not exist." });
-      return;
+      return next({
+        status: 404,
+        message: "User account does not exist.",
+      });
     }
 
     res.status(200).json({
@@ -122,19 +135,22 @@ export const getUserData = async (
       data: findUserData.user,
     });
   } catch (error) {
-    res.status(500).json({ message: "Internal Server Error" });
+    next(error);
   }
 };
 export const updateUser = async (
   req: Request,
-  res: Response
+  res: Response,
+  next: NextFunction
 ): Promise<void> => {
   try {
     const { _id, email, password, displayname, image, cloudinaryid } = req.body;
 
     if (!cloudinaryid) {
-      res.status(400).json({ message: "No Cloudinary Id" });
-      return;
+      return next({
+        status: 400,
+        message: "No Cloudinary Id",
+      });
     }
     const updateUser = await updateUserAccount(
       _id,
@@ -145,19 +161,22 @@ export const updateUser = async (
       cloudinaryid
     );
 
-    if (updateUser.success == false) {
-      res.status(400).json({ message: updateUser.errormessage });
-      return;
+    if (!updateUser.success) {
+      return next({
+        status: 400,
+        message: updateUser.errormessage,
+      });
     }
     res.status(200).json({ message: updateUser.message });
   } catch (error) {
-    res.status(500).json({ message: "Internal Server Error" });
+    next(error);
   }
 };
 
 export const forgotPassword = async (
   req: Request,
-  res: Response
+  res: Response,
+  next: NextFunction
 ): Promise<void> => {
   try {
     const { id } = req.params;
@@ -165,33 +184,42 @@ export const forgotPassword = async (
 
     const forgotPasswordResult = await forgotPasswordService(id, password);
     if (!forgotPasswordResult) {
-      res.status(400).json({ message: "Password not updated" });
+      return next({
+        status: 400,
+        message: "Password not updated",
+      });
     }
     res.status(200).json({ message: "Password updated successfully" });
   } catch (error) {
-    res.status(500).json({ message: "Internal Server Error" });
+    next(error);
   }
 };
 export const resetPassword = async (
   req: Request,
-  res: Response
+  res: Response,
+  next: NextFunction
 ): Promise<void> => {
   try {
     const { email } = req.body;
     const emailCheck = await findEmailService(email);
 
     if (!emailCheck) {
-      res.status(400).json({ message: "Account not exists" });
-      return;
+      return next({
+        status: 400,
+        message: "Account not exists",
+      });
     }
 
     const sendLinkForgot = await sendLink(email);
 
     if (!sendLinkForgot) {
-      res.status(400).json({ message: "Link not sent" });
+      return next({
+        status: 400,
+        message: "Link not sent",
+      });
     }
     res.status(200).json({ message: "Link sent successfully" });
   } catch (error) {
-    res.status(500).json({ message: "Internal Server Error" });
+    next(error);
   }
 };

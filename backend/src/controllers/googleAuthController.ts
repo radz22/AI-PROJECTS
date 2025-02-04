@@ -1,19 +1,20 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import { generateToken } from "../services/jwtService";
 import { findEmailService, createAccount } from "../services/googleAuthService";
 
 export const googleAuthSignin = async (
   req: Request,
-  res: Response
+  res: Response,
+  next: NextFunction
 ): Promise<void> => {
   try {
     const { email } = req.body;
     const existingUser = await findEmailService(email);
     if (!existingUser) {
-      res
-        .status(404)
-        .json({ message: "Account not found. Please sign up first." });
-      return;
+      return next({
+        status: 400,
+        message: "Account not exists. Please Sign Up.",
+      });
     }
     const token = generateToken({ id: existingUser._id });
 
@@ -22,21 +23,24 @@ export const googleAuthSignin = async (
       login: true,
     });
   } catch (error) {
-    res.status(500).json({ message: "Internal Server Error" });
+    next(error);
   }
 };
 
 export const googleAuthSignup = async (
   req: Request,
-  res: Response
+  res: Response,
+  next: NextFunction
 ): Promise<void> => {
   try {
     const { email, displayname, image } = req.body;
 
     const existingUser = await findEmailService(email);
     if (existingUser) {
-      res.status(400).json({ message: "Account already exists" });
-      return;
+      return next({
+        status: 400,
+        message: "Account already exists. Please sign in.",
+      });
     }
 
     const createAccountResult = await createAccount(
@@ -45,18 +49,19 @@ export const googleAuthSignup = async (
       null,
       image
     );
-    if (createAccountResult.success) {
-      res.status(201).json({
-        token: createAccountResult.token,
-        login: createAccountResult.success,
+    if (!createAccountResult.success) {
+      return next({
+        status: 400,
+        message: createAccountResult.message,
       });
-      return;
     }
-
-    res.status(400).json({ message: createAccountResult.message });
+    res.status(201).json({
+      token: createAccountResult.token,
+      login: createAccountResult.success,
+    });
   } catch (error) {
     if (!res.headersSent) {
-      res.status(500).json({ message: "Internal Server Error" });
+      next(error);
     }
   }
 };

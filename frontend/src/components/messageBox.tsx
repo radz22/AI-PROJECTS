@@ -1,31 +1,33 @@
-import React, { useEffect } from "react";
+import React from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
 import { userDataType } from "../types/user-data-type";
 import geminiAiHook from "../hooks/gemini/geminiAi-hook";
 import { aiPosttype } from "../types/aichat-type";
 import { Atom, OrbitProgress } from "react-loading-indicators";
+import { userInputType, userInputSchema } from "../types/input-user";
 interface headerProps {
   data: userDataType | null;
 }
 export const MessageBox: React.FC<headerProps> = ({ data }) => {
+  const { handleAiPrompting, chatAi, promptingMutating } = geminiAiHook();
+
   const {
-    handleAiPrompting,
-    userInput,
-    setUserInput,
-    chatAi,
-    promptingMutating,
-  } = geminiAiHook();
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<userInputType>({
+    resolver: zodResolver(userInputSchema),
+  });
 
-  const handleResponse = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
+  const onSubmit = (userInput: userInputType) => {
     const userResponse: aiPosttype = {
       name: data?.displayname,
-      prompt: userInput,
+      prompt: userInput.message,
     };
-
     handleAiPrompting(userResponse);
-
-    setUserInput("");
+    reset();
   };
 
   return (
@@ -83,16 +85,21 @@ export const MessageBox: React.FC<headerProps> = ({ data }) => {
           </div>
         </div>
         <div className=" border-t-4 border-[#eeeeee] bg-[#ffffff] w-full px-3 py-3  overflow-x-auto  shadow-lg shadow-[#dbdbdb] rounded-b-lg	">
-          <form onSubmit={handleResponse}>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <div>
+              {errors.message && (
+                <p className="text-[#EA454C]  max-xl:text-base  max-lg:text-sm px-3">
+                  {errors.message.message}
+                </p>
+              )}
+            </div>
             <div className="flex  justify-center gap-5 w-full   py-3 max-md:gap-3">
               <div className="w-[90%]">
                 <div className="w-full">
                   <input
-                    type="text"
-                    className="w-full px-3 py-3 bg-[#f0f0f0] text-[#4e4e4e]  placeholder-[#4e4e4e] rounded-lg max-md:text-sm"
+                    {...register("message")}
                     placeholder="Message SANTY-AI"
-                    value={userInput}
-                    onChange={(e) => setUserInput(e.target.value)}
+                    className="w-full px-3 py-3 bg-[#f0f0f0] text-[#4e4e4e]  placeholder-[#4e4e4e] rounded-lg max-md:text-sm"
                   />
                 </div>
               </div>

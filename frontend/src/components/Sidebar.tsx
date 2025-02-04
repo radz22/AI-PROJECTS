@@ -1,7 +1,7 @@
 export const Sidebar = () => {
   return (
-    <div className="w-[20%]">
-      <div className="w-full bg-[#408fec] rounded-md  py-5  h-screen">
+    <div className="w-[20%] bg-[#408fec] rounded-md  h-full max-lg:hidden">
+      <div className="w-full  py-5  ">
         <div>
           <h1 className="text-center text-2xl text-[#ffffff] font-semibold ">
             CHAT BOSS

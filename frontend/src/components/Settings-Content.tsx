@@ -60,8 +60,8 @@ export const SettingsContent = () => {
   };
 
   return (
-    <div className="w-[80%] flex items-center justify-center h-screen">
-      <div className="w-[90%] bg-[#ffffff] px-5 py-5 rounded-md pb-10">
+    <div className="w-[80%] flex items-center justify-center h-screen max-lg:w-full max-lg:mt-10">
+      <div className="w-[90%] bg-[#ffffff] px-5 py-5 rounded-md pb-10  max-md:w-full">
         <div className="flex items-center gap-2">
           <div>
             <svg
@@ -87,17 +87,17 @@ export const SettingsContent = () => {
         <div className="mt-10 bg-[#ffffff] shadow-xl shadow-[#c1c1c1] w-full rounded-md">
           <div className="w-full bg-[#408fec] rounded-md">
             <div className="py-5 px-5">
-              <h1 className="text-xl text-[#ffffff] font-medium">
+              <h1 className="text-xl text-[#ffffff] font-medium  max-md:text-lg">
                 Accounting Setting
               </h1>
             </div>
           </div>
-          <div className="py-3 px-10 mt-5 pb-10 flex items-center gap-10">
-            <div className="w-[70%]">
+          <div className="py-3 px-10 mt-5 pb-10 flex items-center gap-10 max-md:flex-col">
+            <div className="w-[70%] max-md:w-full max-md:order-2">
               <form className="mt-10" onSubmit={handleSubmit(onSubmit)}>
                 <div>
                   <div>
-                    <h1 className="text-lg text-[#181818] font-semibold">
+                    <h1 className="text-lg text-[#181818] font-semibold  max-xl:text-base max-lg:text-sm">
                       Display Name
                     </h1>
                   </div>
@@ -105,12 +105,12 @@ export const SettingsContent = () => {
                     <input
                       {...register("displayname")}
                       placeholder="Enter your Display Name"
-                      className="w-full border border-[#636364] mt-2 px-2 py-3 rounded-lg"
+                      className="w-full  border border-[#636364] mt-2 px-2 py-3 rounded-lg  max-xl:text-base  max-lg:text-sm"
                     />
                   </div>
                   <div>
                     {errors.displayname && (
-                      <p className="text-[#EA454C]">
+                      <p className="text-[#EA454C]  max-xl:text-base  max-lg:text-sm">
                         {errors.displayname.message}
                       </p>
                     )}
@@ -118,7 +118,7 @@ export const SettingsContent = () => {
                 </div>
                 <div className="mt-5">
                   <div>
-                    <h1 className="text-lg text-[#181818] font-semibold">
+                    <h1 className="text-lg text-[#181818] font-semibold  max-xl:text-base max-lg:text-sm">
                       Email
                     </h1>
                   </div>
@@ -126,19 +126,21 @@ export const SettingsContent = () => {
                     <input
                       {...register("email")}
                       placeholder="Enter your Email"
-                      className="w-full border border-[#636364] mt-2 px-2 py-3 rounded-lg"
+                      className="w-full  border border-[#636364] mt-2 px-2 py-3 rounded-lg  max-xl:text-base  max-lg:text-sm"
                       readOnly
                     />
                   </div>
                   <div>
                     {errors.email && (
-                      <p className="text-[#EA454C]">{errors.email.message}</p>
+                      <p className="text-[#EA454C]  max-xl:text-base  max-lg:text-sm">
+                        {errors.email.message}
+                      </p>
                     )}
                   </div>
                 </div>
                 <div className="mt-5">
                   <div>
-                    <h1 className="text-lg text-[#181818] font-semibold">
+                    <h1 className="text-lg text-[#181818] font-semibold  max-xl:text-base max-lg:text-sm">
                       Password
                     </h1>
                   </div>
@@ -147,12 +149,12 @@ export const SettingsContent = () => {
                       {...register("password")}
                       type="password"
                       placeholder="Enter your Password"
-                      className="w-full border border-[#636364] mt-2 px-2 py-3 rounded-lg"
+                      className="w-full  border border-[#636364] mt-2 px-2 py-3 rounded-lg  max-xl:text-base  max-lg:text-sm"
                     />
                   </div>
                   <div>
                     {errors.password && (
-                      <p className="text-[#EA454C]">
+                      <p className="text-[#EA454C]  max-xl:text-base  max-lg:text-sm">
                         {errors.password.message}
                       </p>
                     )}
@@ -178,7 +180,7 @@ export const SettingsContent = () => {
                 </div>
               </form>
             </div>
-            <div className="w-[30%]">
+            <div className="w-[30%] max-md:w-full max-md:order-1">
               <div className="w-full flex items-center justify-center">
                 <img
                   src={image}

@@ -5,6 +5,7 @@ import cors from "cors";
 import geminiRoute from "./routes/geminiRoute";
 import googleAuthRouter from "./routes/googleAuthRoute";
 import userAuthRouter from "./routes/userAuthRoute";
+import { errorHandler } from "./middleware/error-handling";
 const app: Application = express();
 const PORT = 3000;
 
@@ -15,6 +16,7 @@ app.use(cors());
 app.use("/api", geminiRoute);
 app.use("/google/auth", googleAuthRouter);
 app.use("/user/auth", userAuthRouter);
+app.use(errorHandler);
 
 // Start the server
 connectDB().then(() => {
